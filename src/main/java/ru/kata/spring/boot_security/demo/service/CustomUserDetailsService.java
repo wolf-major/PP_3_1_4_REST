@@ -5,29 +5,29 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
 @Service
-public class CustomUserDerailsService implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Autowired
-    public CustomUserDerailsService(UserRepository userRepository) {
+    public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        User user = userRepository.findUserByEmail(userName);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findUserByEmail(username);
         if (user == null) {
-            throw new UsernameNotFoundException("Unknown user: " + userName);
+            throw new UsernameNotFoundException("Unknown user: " + username);
         }
-        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
+        return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(user.getPassword())
-                .roles()
+                .roles(user.getRoles().stream().map(Role::getName).toArray(String[] :: new))
                 .build();
-        return null;
     }
 }

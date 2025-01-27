@@ -127,19 +127,30 @@ public class User implements UserDetails {
 
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", adress='" + address + '\'' + ", phoneNumber='" + phoneNumber + '\'' + ", email='" + email + '\'' + '}';
+        return "User{"
+                + "id=" + id
+                + ", firstName='" + firstName + '\''
+                + ", lastName='" + lastName + '\''
+                + ", address='" + address + '\''
+                + ", phoneNumber='" + phoneNumber + '\''
+                + ", email='" + email + '\'' + '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(address, user.address) && Objects.equals(phoneNumber, user.phoneNumber) && Objects.equals(email, user.email);
+        return Objects.equals(firstName, user.firstName)
+                && Objects.equals(lastName, user.lastName)
+                && Objects.equals(address, user.address)
+                && Objects.equals(phoneNumber, user.phoneNumber)
+                && Objects.equals(id, user.id)
+                && Objects.equals(email, user.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, lastName, address, phoneNumber, email);
+        return Objects.hash(id, firstName, lastName, address, phoneNumber, email);
     }
 
     @Override
