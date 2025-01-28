@@ -32,7 +32,7 @@ public class UsersController {
 
 
     @GetMapping(value = "/user_page")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAuthority('USER')")
     public ModelAndView getUserPage(Principal principal) {
         ModelAndView mav = new ModelAndView("user_page");
         User user = userService.getUserByEmail(principal.getName());
