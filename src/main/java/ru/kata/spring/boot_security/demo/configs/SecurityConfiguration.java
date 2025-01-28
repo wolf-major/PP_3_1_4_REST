@@ -30,18 +30,18 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer :: disable)
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/", "/index", "/register/**").permitAll()
+                        .requestMatchers("/", "/registration").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/user").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/user_page").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated())
                 .formLogin(formLog -> formLog
-                        .loginPage("/signin")
+                        .loginPage("/login")
                         .usernameParameter("email")
                         .defaultSuccessUrl("/", true)
                         .permitAll())
                 .rememberMe(rememberMe -> rememberMe
                         .key("Xk8q2$Dv5@mWp9z!Lt7*Rn4%Fg1&Hs3^Jh6"))
-                .logout(logout -> logout.logoutUrl("/signout").permitAll());
+                .logout(logout -> logout.logoutUrl("/logout").permitAll());
         return http.build();
     }
 }
