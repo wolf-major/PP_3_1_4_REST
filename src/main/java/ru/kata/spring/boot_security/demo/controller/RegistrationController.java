@@ -34,7 +34,7 @@ public class RegistrationController {
     public String getRegistrationPage(Model model) {
         model.addAttribute("newUser", new User());
         model.addAttribute("roles", userService.getAllRoles());
-        model.addAttribute("isNew", true);
+        model.addAttribute("byUser", true);
         model.addAttribute("isAdmin", false);
         model.addAttribute("isUser", true);
         return "new_user";

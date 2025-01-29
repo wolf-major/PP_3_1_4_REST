@@ -45,7 +45,7 @@ public class AdminsController {
     public String createNewUserForm(Model model) {
         model.addAttribute("newUser", new User());
         model.addAttribute("roles", userService.getAllRoles());
-        model.addAttribute("isNew", true);
+        model.addAttribute("byUser", false);
         model.addAttribute("isAdmin", false);
         model.addAttribute("isUser", true);
         return "new_user";

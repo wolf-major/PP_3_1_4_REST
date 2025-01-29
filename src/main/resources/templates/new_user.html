@@ -8,8 +8,7 @@
 <body>
 <div class="container mt-4">
     <h1>Добавить нового пользователя</h1>
-    <form th:action="@{${isNew ? '/registration' : '/admin/save'}}" th:object="${newUser}" method="post">
-        <input type="hidden" th:if="${!isNew}"/>
+    <form th:action="@{${byUser ? '/registration' : '/admin/save'}}" th:object="${newUser}" method="post">
         <div class="mb-3">
             <label for="firstName" class="form-label">Имя</label>
             <input type="text" class="form-control" id="firstName" th:field="*{firstName}" required>
