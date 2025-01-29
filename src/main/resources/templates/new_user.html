@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Добавить нового пользователя</title>
@@ -8,7 +8,8 @@
 <body>
 <div class="container mt-4">
     <h1>Добавить нового пользователя</h1>
-    <form th:action="@{/registration}" th:object="${newUser}" method="post">
+    <form th:action="@{${isNew ? '/registration' : '/admin/save'}}" th:object="${newUser}" method="post">
+        <input type="hidden" th:if="${!isNew}"/>
         <div class="mb-3">
             <label for="firstName" class="form-label">Имя</label>
             <input type="text" class="form-control" id="firstName" th:field="*{firstName}" required>
@@ -37,6 +38,27 @@
             <label for="passwordConfirm" class="form-label">Подтверждение пароля</label>
             <input type="password" class="form-control" id="passwordConfirm" th:field="*{passwordConfirm}" required>
             <div class="text-danger" th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"></div>
+        </div>
+        <div class="mb-3" sec:authorize="hasRole('ADMIN')">
+            <p>
+                <label>
+                    <input type="checkbox"
+                           name="rolesIds"
+                           th:value="1"
+                           th:checked="${isUser}"/>
+                    USER
+                </label>
+            </p>
+
+            <p>
+                <label>
+                    <input type="checkbox"
+                           name="rolesIds"
+                           th:value="2"
+                           th:checked="${isAdmin}"/>
+                    ADMIN
+                </label>
+            </p>
         </div>
         <button type="submit" class="btn btn-primary">Сохранить</button>
     </form>

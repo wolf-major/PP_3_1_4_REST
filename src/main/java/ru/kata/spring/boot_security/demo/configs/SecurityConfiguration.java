@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect;
 
 
 @Configuration
@@ -37,11 +38,16 @@ public class SecurityConfiguration {
                 .formLogin(formLog -> formLog
                         .loginPage("/login")
                         .usernameParameter("email")
-                        .defaultSuccessUrl("/user_page", true)
+                        .successHandler(successUserHandler)
                         .permitAll())
                 .rememberMe(rememberMe -> rememberMe
                         .key("Xk8q2$Dv5@mWp9z!Lt7*Rn4%Fg1&Hs3^Jh6"))
                 .logout(logout -> logout.logoutUrl("/logout").permitAll());
         return http.build();
+    }
+
+    @Bean
+    public SpringSecurityDialect springSecurityDialect() {
+        return new SpringSecurityDialect();
     }
 }

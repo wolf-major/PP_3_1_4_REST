@@ -9,7 +9,8 @@
 <body>
 <div class="container mt-4">
     <h1 th:text="${title}">Список пользователей:</h1>
-    <a th:href="@{/add_user}" class="btn btn-primary mb-3">Добавить пользователя</a>
+    <a th:href="@{/admin/add_user}" class="btn btn-primary mb-3">Добавить пользователя</a>
+    <a href="/logout" class="btn btn-primary mb-3">Выйти</a>
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -19,6 +20,7 @@
             <th>Email</th>
             <th>Телефон</th>
             <th>Адрес</th>
+            <th>Роль</th>
             <th>Действия</th>
         </tr>
         </thead>
@@ -30,9 +32,10 @@
             <td th:text="${user.email}">john.doe@example.com</td>
             <td th:text="${user.phoneNumber}">123-456-7890</td>
             <td th:text="${user.address}">New York, USA</td>
+            <td th:text="${user.roles}">User</td>
             <td>
-                <a th:href="@{/edit(id=${user.id})}" class="btn btn-warning">Изменить</a>
-                <a th:href="@{/delete(id=${user.id})}" class="btn btn-danger">Удалить</a>
+                <a th:href="@{/admin/edit(id=${user.id})}" class="btn btn-warning">Изменить</a>
+                <a th:href="@{/admin/delete(id=${user.id})}" class="btn btn-danger">Удалить</a>
             </td>
         </tr>
         </tbody>

@@ -8,9 +8,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -25,20 +27,24 @@ public class RegistrationController {
 
     @GetMapping(value = "/")
     public String getWelcomePage() {
-        return "welcome_page";
+        return "/welcome_pages/welcome_page";
     }
 
     @GetMapping(value = "/registration")
-    public String getRegistrationPage(Map<String, Object> model) {
-        User user = new User();
-        model.put("newUser", user);
+    public String getRegistrationPage(Model model) {
+        model.addAttribute("newUser", new User());
+        model.addAttribute("roles", userService.getAllRoles());
+        model.addAttribute("isNew", true);
+        model.addAttribute("isAdmin", false);
+        model.addAttribute("isUser", true);
         return "new_user";
     }
 
     @PostMapping("/registration")
-    public String addNewUser(@ModelAttribute("newUser") @Valid User newUser,
-                             BindingResult bindingResult,
-                             Model model) {
+    public String addNewUser(@ModelAttribute("newUser")
+                                 @Valid User newUser,
+                             @RequestParam(value = "rolesIds", required = false) List<Long> rolesIds,
+                             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "new_user";
         }
@@ -46,7 +52,8 @@ public class RegistrationController {
             bindingResult.rejectValue("passwordConfirm", "error.newUser", "Пароли не совпадают");
             return "new_user";
         }
-        userService.saveUser(newUser);
+        userService.saveUser(newUser, rolesIds);
         return "redirect:/login";
     }
 }
+

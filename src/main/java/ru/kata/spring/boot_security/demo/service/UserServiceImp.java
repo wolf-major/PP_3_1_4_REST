@@ -11,8 +11,7 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class UserServiceImp implements UserService {
@@ -39,7 +38,7 @@ public class UserServiceImp implements UserService {
     @Override
     @Transactional(readOnly = true)
     public User getUser(Long id) {
-        return userRepository.getUsersById(id);
+        return userRepository.findUserById(id);
     }
 
     @Override
@@ -50,8 +49,8 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
-    public void deleteUser(User user) {
-        userRepository.delete(user);
+    public void deleteUser(Long id) {
+        userRepository.delete(userRepository.findUserById(id));
     }
 
     @Override
@@ -63,7 +62,9 @@ public class UserServiceImp implements UserService {
         existingUser.setLastName(user.getLastName());
         existingUser.setEmail(user.getEmail());
         existingUser.setAddress(user.getAddress());
-        existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (!user.getPassword().equals(existingUser.getPassword())) {
+            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         existingUser.setPhoneNumber(user.getPhoneNumber());
         existingUser.setRoles(user.getRoles());
 
@@ -71,19 +72,43 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Role> getAllRoles() {
+        return roleRepository.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<Role> getRolesById(List<Long> ids) {
+        return new HashSet<>(roleRepository.findAllById(ids));
+    }
+
+    @Override
     @Transactional
-    public void saveUser(User user) {
-        Role userRole = roleRepository.findByName("USER");
-        if (userRole == null) {
+    public void saveUser(User user, List<Long> rolesIds) {
+        Set<Role> roles = new HashSet<>();
+        if (rolesIds != null) {
+            for (Long roleId : rolesIds) {
+                Role role = roleRepository.findById(roleId).orElse(null);
+                if (role != null) {
+                    roles.add(role);
+                }
+            }
+            user.setRoles(roles);
+        } else {
+            Role userRole = roleRepository.findByName("USER");
+            if (userRole == null) {
             userRole = new Role(1L,"USER");
             roleRepository.save(userRole);
+            }
+            user.setRoles(Collections.singleton(userRole));
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Collections.singleton(userRole));
         userRepository.save(user);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findUserByEmail(username);
         if (user == null) {
@@ -92,7 +117,11 @@ public class UserServiceImp implements UserService {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(user.getPassword())
-                .roles(user.getRoles().stream().map(Role::getName).toArray(String[] :: new))
+                .roles(user
+                        .getRoles()
+                        .stream()
+                        .map(Role::getName)
+                        .toArray(String[] :: new))
                 .build();
     }
 }
