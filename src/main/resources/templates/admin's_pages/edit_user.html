@@ -32,13 +32,21 @@
             <input type="text" class="form-control" id="address" th:field="*{address}" required>
         </div>
         <div class="mb-3">
+            <label for="password" class="form-label">Пароль</label>
+            <input type="password" class="form-control" id="password" th:field="*{password}" required>
+        </div>
+        <div class="mb-3">
+            <label for="passwordConfirm" class="form-label">Подтверждение пароля</label>
+            <input type="password" class="form-control" id="passwordConfirm" th:field="*{passwordConfirm}" required>
+            <div class="text-danger" th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"></div>
+        </div>
+        <div class="mb-3">
             <p>
                 <label>
                     <input type="checkbox"
-                           name="roles"
+                           name="rolesIds"
                            th:value="1"
-                           th:checked="${isUser}"
-                           th:field="*{roles}" />
+                           th:checked="${isUser}"/>
                     USER
                 </label>
             </p>
@@ -46,15 +54,13 @@
             <p>
                 <label>
                     <input type="checkbox"
-                           name="roles"
+                           name="rolesIds"
                            th:value="2"
-                    th:checked="${isAdmin}"
-                    th:field="*{roles}" />
+                           th:checked="${isAdmin}"/>
                     ADMIN
                 </label>
             </p>
         </div>
-        <input type="hidden" th:field="*{password}">
         <button type="submit" class="btn btn-primary">Сохранить</button>
     </form>
 </div>

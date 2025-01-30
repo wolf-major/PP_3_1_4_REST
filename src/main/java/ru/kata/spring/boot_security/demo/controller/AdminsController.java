@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.kata.spring.boot_security.demo.model.Role;
@@ -79,15 +80,28 @@ public class AdminsController {
 
         mav.addObject("user", user);
         mav.addObject("isAdmin", user.getRoles().stream()
-                .anyMatch(role -> role.getName().equals("ROLE_ADMIN")));
+                .anyMatch(rolesIds -> rolesIds.getName().equals("ADMIN")));
         mav.addObject("isUser", user.getRoles().stream()
-                .anyMatch(role -> role.getName().equals("ROLE_USER")));
+                .anyMatch(rolesIds -> rolesIds.getName().equals("USER")));
+        mav.addObject("allRoles", userService.getAllRoles());
         return mav;
     }
 
     @PostMapping(value = "/save_edit")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String saveEditUser(@ModelAttribute("user") User user) {
+    public String saveEditUser(@ModelAttribute("user") User user,
+                               @RequestParam(value = "rolesIds", required = false) List<Long> rolesIds,
+                               BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "/admin's_pages/edit_user";
+        }
+        if (!user.getPassword().equals(user.getPasswordConfirm())) {
+            bindingResult.rejectValue("passwordConfirm", "error.user", "Пароли не совпадают");
+            return "/admin's_pages/edit_user";
+        }
+        Set<Role> roles = userService.getRolesById(rolesIds);
+        user.setRoles(roles);
+
         userService.updateUser(user);
         return "redirect:/admin/users";
     }
