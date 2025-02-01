@@ -21,7 +21,7 @@ public interface UserService extends UserDetailsService {
 
     void saveUser(User user, List<Long> rolesIds);
 
-    List<Role> getAllRoles();
+    boolean isAdmin(User user);
 
-    Set<Role> getRolesById(List<Long> ids);
+    boolean isUser(User user);
 }

@@ -33,11 +33,11 @@
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">Пароль</label>
-            <input type="password" class="form-control" id="password" th:field="*{password}" required>
+            <input type="password" class="form-control" id="password" th:field="*{password}">
         </div>
         <div class="mb-3">
             <label for="passwordConfirm" class="form-label">Подтверждение пароля</label>
-            <input type="password" class="form-control" id="passwordConfirm" th:field="*{passwordConfirm}" required>
+            <input type="password" class="form-control" id="passwordConfirm" th:field="*{passwordConfirm}">
             <div class="text-danger" th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"></div>
         </div>
         <div class="mb-3">

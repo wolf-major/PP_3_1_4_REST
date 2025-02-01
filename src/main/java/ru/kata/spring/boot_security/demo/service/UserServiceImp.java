@@ -63,24 +63,14 @@ public class UserServiceImp implements UserService {
         existingUser.setEmail(user.getEmail());
         existingUser.setAddress(user.getAddress());
         if (!user.getPassword().equals(existingUser.getPassword())) {
-            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+                existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+            }
         }
         existingUser.setPhoneNumber(user.getPhoneNumber());
         existingUser.setRoles(user.getRoles());
 
         userRepository.save(existingUser);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Role> getAllRoles() {
-        return roleRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Set<Role> getRolesById(List<Long> ids) {
-        return new HashSet<>(roleRepository.findAllById(ids));
     }
 
     @Override
@@ -111,6 +101,8 @@ public class UserServiceImp implements UserService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findUserByEmail(username);
+        System.out.println("User found: " + user.getEmail() + " with roles: " + user.getRoles());
+
         if (user == null) {
             throw new UsernameNotFoundException("Unknown user: " + username);
         }
@@ -123,5 +115,17 @@ public class UserServiceImp implements UserService {
                         .map(Role::getName)
                         .toArray(String[] :: new))
                 .build();
+    }
+
+    @Override
+    public boolean isAdmin(User user) {
+        return user.getRoles().stream()
+                .anyMatch(rolesIds -> rolesIds.getName().equals("ADMIN"));
+    }
+
+    @Override
+    public boolean isUser(User user) {
+        return user.getRoles().stream()
+                .anyMatch(rolesIds -> rolesIds.getName().equals("USER"));
     }
 }

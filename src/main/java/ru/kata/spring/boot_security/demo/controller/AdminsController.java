@@ -9,12 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.security.Principal;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @Controller
@@ -22,10 +21,12 @@ import java.util.Set;
 @PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class AdminsController {
     private final UserService userService;
+    private final RoleService roleService;
 
     @Autowired
-    public AdminsController(UserService userService) {
+    public AdminsController(UserService userService, RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @GetMapping
@@ -45,7 +46,7 @@ public class AdminsController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public String createNewUserForm(Model model) {
         model.addAttribute("newUser", new User());
-        model.addAttribute("roles", userService.getAllRoles());
+        model.addAttribute("roles", roleService.getAllRoles());
         model.addAttribute("byUser", false);
         model.addAttribute("isAdmin", false);
         model.addAttribute("isUser", true);
@@ -56,8 +57,6 @@ public class AdminsController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public String saveUser(@ModelAttribute("newUser") User user,
                            @RequestParam(value = "rolesIds", required = false) List<Long> rolesIds) {
-        Set<Role> roles = userService.getRolesById(rolesIds);
-        user.setRoles(roles);
         userService.saveUser(user, rolesIds);
         return "redirect:/admin/users";
     }
@@ -66,8 +65,7 @@ public class AdminsController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ModelAndView getUserPage(Principal principal) {
         ModelAndView mav = new ModelAndView("/user_page");
-        User user = userService.getUserByEmail(principal.getName());
-        mav.addObject("user", user);
+        mav.addObject("user", userService.getUserByEmail(principal.getName()));
         mav.addObject("isUserRole", false);
         return mav;
     }
@@ -79,11 +77,9 @@ public class AdminsController {
         User user = userService.getUser(id);
 
         mav.addObject("user", user);
-        mav.addObject("isAdmin", user.getRoles().stream()
-                .anyMatch(rolesIds -> rolesIds.getName().equals("ADMIN")));
-        mav.addObject("isUser", user.getRoles().stream()
-                .anyMatch(rolesIds -> rolesIds.getName().equals("USER")));
-        mav.addObject("allRoles", userService.getAllRoles());
+        mav.addObject("isAdmin", userService.isAdmin(user));
+        mav.addObject("isUser", userService.isUser(user));
+        mav.addObject("allRoles", roleService.getAllRoles());
         return mav;
     }
 
@@ -99,9 +95,7 @@ public class AdminsController {
             bindingResult.rejectValue("passwordConfirm", "error.user", "Пароли не совпадают");
             return "/admin's_pages/edit_user";
         }
-        Set<Role> roles = userService.getRolesById(rolesIds);
-        user.setRoles(roles);
-
+        roleService.setRolesToUser(user, rolesIds);
         userService.updateUser(user);
         return "redirect:/admin/users";
     }

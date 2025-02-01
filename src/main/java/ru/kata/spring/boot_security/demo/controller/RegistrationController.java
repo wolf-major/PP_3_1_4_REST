@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.util.List;
@@ -19,10 +20,12 @@ import java.util.Map;
 @Valid
 public class RegistrationController {
     private final UserService userService;
+    private final RoleService roleService;
 
     @Autowired
-    public RegistrationController(UserService userService) {
+    public RegistrationController(UserService userService, RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @GetMapping(value = "/")
@@ -33,7 +36,7 @@ public class RegistrationController {
     @GetMapping(value = "/registration")
     public String getRegistrationPage(Model model) {
         model.addAttribute("newUser", new User());
-        model.addAttribute("roles", userService.getAllRoles());
+        model.addAttribute("roles", roleService.getAllRoles());
         model.addAttribute("byUser", true);
         model.addAttribute("isAdmin", false);
         model.addAttribute("isUser", true);
