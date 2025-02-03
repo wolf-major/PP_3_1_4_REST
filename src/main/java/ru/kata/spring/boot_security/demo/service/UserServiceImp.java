@@ -61,7 +61,7 @@ public class UserServiceImp implements UserService {
         existingUser.setFirstName(user.getFirstName());
         existingUser.setLastName(user.getLastName());
         existingUser.setEmail(user.getEmail());
-        existingUser.setAddress(user.getAddress());
+        existingUser.setAge(user.getAge());
         if (!user.getPassword().equals(existingUser.getPassword())) {
             if (user.getPassword() != null && !user.getPassword().isEmpty()) {
                 existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -69,6 +69,7 @@ public class UserServiceImp implements UserService {
         }
         existingUser.setPhoneNumber(user.getPhoneNumber());
         existingUser.setRoles(user.getRoles());
+
 
         userRepository.save(existingUser);
     }

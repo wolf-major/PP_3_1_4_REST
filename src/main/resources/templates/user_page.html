@@ -3,26 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <title>Пользовательские данные</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        .title {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: dimgrey;
+            padding: 10px;
+        }
+
+        .text-block {
+            font-size: 18px;
+            color: white;
+            padding: 5px 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .text-block-button {
+            font-size: 18px;
+            color: white;
+            padding: 5px 20px;
+            text-decoration: none;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        body {
+            margin-top: 60px;
+        }
+
+        .text-block-button:hover {
+            color: #ffcc00;
+        }
+
+        .title-table th {
+            font-size: 25px;
+            background-color: whitesmoke !important;
+            color: black;
+            text-align: left;
+            padding: 10px 10px;
+        }
+        .sidebar {
+            background-color: grey;
+            color: white;
+            font-size: 20px;
+            height: 100vh;
+            padding: 20px 20px;
+            width: 15%;
+        }
+
+    </style>
 </head>
 <body>
-<div class="container mt-4" >
-    <h1>Ваши данные:</h1>
-    <div class="card">
-        <div class="card-body">
-            <p class="card-text">
-                First name: <span th:text="${user.firstName}"></span><br>
-                Second name: <span th:text="${user.lastName}"></span><br>
-                Email: <span th:text="${user.email}"></span><br>
-                Телефон: <span th:text="${user.phoneNumber}"></span><br>
-                Адрес: <span th:text="${user.address}"></span><br>
-                Статус: <span th:text="${user.roles}"></span>
-            </p>
-            <a th:if="${isUserRole}" th:href="@{/user/edit(id=${user.id})}" class="btn btn-warning">Изменить</a>
-            <a th:if="${!isUserRole}" th:href="@{/admin/edit(id=${user.id})}" class="btn btn-warning">Изменить</a>
-            <a href="/logout" class="btn btn-danger">Выйти</a>
-        </div>
+    <div class="title">
+    <div class="text-block">
+        <span th:text="${user.email}">test</span> &nbsp;with roles:&nbsp; <span th:text="${user.roles}">test</span>
     </div>
-</div>
+    <a href="/logout" class="text-block-button">Выйти</a>
+    </div>
+    <div class="d-flex">
+        <div class="sidebar col-3">
+        <a th:if="${isUserRole}" th:href="@{/user_page}" class="sidebar col-3">User</a>
+        <a th:if="${!isUserRole}" th:href="@{/admin/users}" class="sidebar col-3">Admin</a>
+    </div>
+            <div class="container-fluid">
+                <table class="table table-bordered">
+                    <thead>
+                    <h1>User's information-page</h1>
+                    <tr class="title-table">
+                        <th colspan="7">Ваши данные:</th>
+                    </tr>
+                    <tr>
+                        <th>Имя</th>
+                        <th>Фамилия</th>
+                        <th>Email</th>
+                        <th>Телефон</th>
+                        <th>Адрес</th>
+                        <th>Роль</th>
+                        <th>Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:value="user">
+                        <td th:text="${user.firstName}">John</td>
+                        <td th:text="${user.lastName}">Doe</td>
+                        <td th:text="${user.email}">john.doe@example.com</td>
+                        <td th:text="${user.phoneNumber}">123-456-7890</td>
+                        <td th:text="${user.age}">New York, USA</td>
+                        <td th:text="${user.roles}">User</td>
+                        <td>
+                            <a th:if="${isUserRole}" th:href="@{/user/edit(id=${user.id})}" class="btn btn-warning">Изменить</a>
+                            <a th:if="${!isUserRole}" th:href="@{/admin/edit(id=${user.id})}" class="btn btn-warning">Изменить</a>
+                        </td>
+                    </tr>
+                    </tbody>
+            </div>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8QRqS9e"
+        crossorigin="anonymous"></script>
 </body>
 </html>

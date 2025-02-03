@@ -54,7 +54,7 @@ public class Init {
             user.setEmail("user@example.com");
             user.setPassword("00000000");
             user.setPhoneNumber("+1(404) 678-9012");
-            user.setAddress("123 Peachtree St, Atlanta, GA 30301, USA");
+            user.setAge(35);
             user.setRoles(new HashSet<>(Collections.singleton(roleService.findRoleByName("USER"))));
 
             userService.saveUser(user, Collections.singletonList(1L));
@@ -68,7 +68,7 @@ public class Init {
             admin.setEmail("admin@example.com");
             admin.setPassword(("00000000"));
             admin.setPhoneNumber("+1(404) 901-2345");
-            admin.setAddress("789 Peachtree St, Atlanta, GA 30301, USA");
+            admin.setAge(25);
             admin.setRoles(new HashSet<>(Collections.singleton(roleService.findRoleByName("ADMIN"))));
 
             userService.saveUser(admin, Collections.singletonList(2L));

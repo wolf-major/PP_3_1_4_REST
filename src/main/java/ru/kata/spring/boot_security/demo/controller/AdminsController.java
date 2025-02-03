@@ -31,12 +31,16 @@ public class AdminsController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public String getAdminPage(Model model) {
+    public String getAdminPage(Model model, Principal principal) {
+        User user = userService.getUserByEmail(principal.getName());
+        model.addAttribute("user", user);
         return "admin's_pages/admin_start_page";
     }
 
     @GetMapping(value = "/users")
-    public String getUsers(Model model) {
+    public String getUsers(Model model, Principal principal) {
+        User user = userService.getUserByEmail(principal.getName());
+        model.addAttribute("userTitle", user);
         model.addAttribute("title", "Список пользователей:");
         model.addAttribute("user_list", userService.getUsers());
         return "admin's_pages/user_list";
