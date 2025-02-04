@@ -41,8 +41,11 @@ public class AdminsController {
     public String getUsers(Model model, Principal principal) {
         User user = userService.getUserByEmail(principal.getName());
         model.addAttribute("userTitle", user);
+        model.addAttribute("newUser", new User());
         model.addAttribute("title", "Список пользователей:");
         model.addAttribute("user_list", userService.getUsers());
+        model.addAttribute("isUserRole", userService.isUser(user));
+        model.addAttribute("isAdminRole", userService.isAdmin(user));
         return "admin's_pages/user_list";
     }
 
