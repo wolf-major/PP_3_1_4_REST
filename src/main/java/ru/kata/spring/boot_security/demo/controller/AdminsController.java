@@ -83,7 +83,7 @@ public class AdminsController {
         ModelAndView mav = new ModelAndView("/admin's_pages/edit_user");
         User user = userService.getUser(id);
 
-        mav.addObject("user", user);
+        mav.addObject("existingUser", user);
         mav.addObject("isAdmin", userService.isAdmin(user));
         mav.addObject("isUser", userService.isUser(user));
         mav.addObject("allRoles", roleService.getAllRoles());
