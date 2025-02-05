@@ -7,14 +7,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Set;
 
 @Controller
 @RequestMapping("/admin")
@@ -29,7 +27,7 @@ public class AdminsController {
         this.roleService = roleService;
     }
 
-    public void addAttributes(Model model, Principal principal) {
+    public void addAttributesToMethods(Model model, Principal principal) {
         User user = userService.getUserByEmail(principal.getName());
         model.addAttribute("userTitle", user);
         model.addAttribute("newUser", new User());
@@ -49,7 +47,7 @@ public class AdminsController {
 
     @GetMapping(value = "/users")
     public String getUsers(Model model, Principal principal) {
-        addAttributes(model, principal);
+        addAttributesToMethods(model, principal);
         return "admin's_pages/user_list";
     }
 
@@ -67,7 +65,19 @@ public class AdminsController {
     @PostMapping(value = "/save")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String saveUser(@ModelAttribute("newUser") User user,
-                           @RequestParam(value = "rolesIds", required = false) List<Long> rolesIds) {
+                           @RequestParam(value = "rolesIds", required = false) List<Long> rolesIds,
+                           BindingResult bindingResult,
+                           Model model,
+                           Principal principal) {
+        if (bindingResult.hasErrors()) {
+            addAttributesToMethods(model, principal);
+            return "/admin's_pages/user_list";
+        }
+        if (!user.getPassword().equals(user.getPasswordConfirm())) {
+            model.addAttribute("errorNewUser", "Пароли не совпадают!");
+            addAttributesToMethods(model, principal);
+            return "/admin's_pages/user_list";
+        }
         userService.saveUser(user, rolesIds);
         return "redirect:/admin/users";
     }
@@ -99,7 +109,6 @@ public class AdminsController {
     public String saveEditUser(@ModelAttribute("user") User user,
                                @RequestParam(value = "rolesIds", required = false) List<Long> rolesIds,
                                BindingResult bindingResult, Model model, Principal principal) {
-        User admin = userService.getUserByEmail(principal.getName());
         if (bindingResult.hasErrors()) {
             model.addAttribute("error", "Ошибки в форме!");
             return "admin's_pages/user_list";
@@ -107,7 +116,7 @@ public class AdminsController {
         if (!user.getPassword().equals(user.getPasswordConfirm())) {
             model.addAttribute("error", "Пароли не совпадают!");
             model.addAttribute("currentUser", user);
-            addAttributes(model, principal);
+            addAttributesToMethods(model, principal);
             return "admin's_pages/user_list";
         }
         roleService.setRolesToUser(user, rolesIds);
@@ -115,10 +124,10 @@ public class AdminsController {
         return "redirect:/admin/users";
     }
 
-    @GetMapping(value = "/delete")
+    @PostMapping(value = "/delete")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String deleteUser(@RequestParam(value = "id") Long id) {
-        userService.deleteUser(id);
+    public String deleteUser(@ModelAttribute("user") User user) {
+        userService.deleteUser(user.getId());
         return "redirect:/admin/users";
     }
 }
