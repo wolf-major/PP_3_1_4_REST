@@ -29,6 +29,16 @@ public class AdminsController {
         this.roleService = roleService;
     }
 
+    public void addAttributes(Model model, Principal principal) {
+        User user = userService.getUserByEmail(principal.getName());
+        model.addAttribute("userTitle", user);
+        model.addAttribute("newUser", new User());
+        model.addAttribute("title", "Список пользователей:");
+        model.addAttribute("user_list", userService.getUsers());
+        model.addAttribute("isUserRole", userService.isUser(user));
+        model.addAttribute("isAdminRole", userService.isAdmin(user));
+    }
+
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public String getAdminPage(Model model, Principal principal) {
@@ -39,13 +49,7 @@ public class AdminsController {
 
     @GetMapping(value = "/users")
     public String getUsers(Model model, Principal principal) {
-        User user = userService.getUserByEmail(principal.getName());
-        model.addAttribute("userTitle", user);
-        model.addAttribute("newUser", new User());
-        model.addAttribute("title", "Список пользователей:");
-        model.addAttribute("user_list", userService.getUsers());
-        model.addAttribute("isUserRole", userService.isUser(user));
-        model.addAttribute("isAdminRole", userService.isAdmin(user));
+        addAttributes(model, principal);
         return "admin's_pages/user_list";
     }
 
@@ -94,13 +98,17 @@ public class AdminsController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public String saveEditUser(@ModelAttribute("user") User user,
                                @RequestParam(value = "rolesIds", required = false) List<Long> rolesIds,
-                               BindingResult bindingResult) {
+                               BindingResult bindingResult, Model model, Principal principal) {
+        User admin = userService.getUserByEmail(principal.getName());
         if (bindingResult.hasErrors()) {
-            return "/admin's_pages/edit_user";
+            model.addAttribute("error", "Ошибки в форме!");
+            return "admin's_pages/user_list";
         }
         if (!user.getPassword().equals(user.getPasswordConfirm())) {
-            bindingResult.rejectValue("passwordConfirm", "error.user", "Пароли не совпадают");
-            return "/admin's_pages/edit_user";
+            model.addAttribute("error", "Пароли не совпадают!");
+            model.addAttribute("currentUser", user);
+            addAttributes(model, principal);
+            return "admin's_pages/user_list";
         }
         roleService.setRolesToUser(user, rolesIds);
         userService.updateUser(user);
