@@ -30,33 +30,12 @@ public class RegistrationController {
 
     @GetMapping(value = "/")
     public String getWelcomePage() {
-        return "/welcome_pages/welcome_page";
+        return "/welcome_pages/login_page";
     }
 
-    @GetMapping(value = "/registration")
-    public String getRegistrationPage(Model model) {
-        model.addAttribute("newUser", new User());
-        model.addAttribute("roles", roleService.getAllRoles());
-        model.addAttribute("byUser", true);
-        model.addAttribute("isAdmin", false);
-        model.addAttribute("isUser", true);
-        return "new_user";
-    }
-
-    @PostMapping("/registration")
-    public String addNewUser(@ModelAttribute("newUser")
-                                 @Valid User newUser,
-                             @RequestParam(value = "rolesIds", required = false) List<Long> rolesIds,
-                             BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "new_user";
-        }
-        if (!newUser.getPassword().equals(newUser.getPasswordConfirm())) {
-            bindingResult.rejectValue("passwordConfirm", "error.newUser", "Пароли не совпадают");
-            return "new_user";
-        }
-        userService.saveUser(newUser, rolesIds);
-        return "redirect:/login";
+    @GetMapping(value = "/login")
+    public String getLoginPage() {
+        return "welcome_pages/login_page";
     }
 }
 

@@ -78,11 +78,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 submitButton.textContent = 'SUBMIT';
                 submitButton.style.display = 'inline-block';
                 removeButton.style.display = 'none';
+                toggleFields(true);
             } else if (action === 'delete-button') {
                 modalForm.querySelector('.modal-title').textContent = 'Delete user';
                 submitButton.textContent = 'DELETE';
                 submitButton.style.display = 'none';
                 removeButton.style.display = 'inline-block';
+                toggleFields(false);
             }
         }
     });
@@ -96,5 +98,16 @@ document.addEventListener("DOMContentLoaded", function () {
         form.action = '/admin/delete';
         form.submit();
     });
+
+    function toggleFields(editable) {
+        const fields = editForm.querySelectorAll('input, select');
+        fields.forEach(field => {
+            if (editable) {
+                field.removeAttribute('readonly');
+            } else {
+                field.setAttribute('readonly', true);
+            }
+        })
+    }
 });
 

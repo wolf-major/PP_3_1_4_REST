@@ -28,12 +28,6 @@ public class UsersController {
         this.userService = userServiceInt;
     }
 
-    @GetMapping(value = "/login")
-    public String getLoginPage() {
-        return "welcome_pages/login_page";
-    }
-
-
     @GetMapping(value = "/user_page")
     @PreAuthorize("hasAuthority('USER')")
     public ModelAndView getUserPage(Principal principal) {
@@ -42,29 +36,6 @@ public class UsersController {
         mav.addObject("user", user);
         mav.addObject("isUserRole", true);
         return mav;
-    }
-
-    @GetMapping(value = "/user/edit")
-    @PreAuthorize("hasAuthority('USER')")
-    public ModelAndView editUserForm(@RequestParam(value = "id") Long id) {
-        ModelAndView mav = new ModelAndView("/user's_pages/edit_user");
-        User user = userService.getUser(id);
-
-        mav.addObject("user", user);
-        return mav;
-    }
-
-    @PostMapping(value = "/user/save_edit")
-    public String saveEditUser(@ModelAttribute("user") User user, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "/user's_pages/edit_user";
-        }
-        if (!user.getPassword().equals((user.getPasswordConfirm()))) {
-            bindingResult.rejectValue("passwordConfirm", "error.user", "Пароли не совпадают");
-            return "/user's_pages/edit_user";
-        }
-        userService.updateUser(user);
-        return "redirect:/user_page";
     }
 }
 
