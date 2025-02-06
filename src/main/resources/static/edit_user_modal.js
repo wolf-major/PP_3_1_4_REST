@@ -70,14 +70,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 option.selected = data.roles.split(",").map(Number).includes(Number(option.value));
             });
 
+            const submitButton = document.getElementById('submitButton');
+            const removeButton = document.getElementById('removeButton');
+
             if (action === 'edit-button') {
                 modalForm.querySelector('.modal-title').textContent = 'Edit user';
-                const submitButton = document.getElementById('submitButton');
                 submitButton.textContent = 'SUBMIT';
+                submitButton.style.display = 'inline-block';
+                removeButton.style.display = 'none';
             } else if (action === 'delete-button') {
-                const submitButton = document.getElementById('submitButton');
-                submitButton.textContent = 'DELETE';
                 modalForm.querySelector('.modal-title').textContent = 'Delete user';
+                submitButton.textContent = 'DELETE';
+                submitButton.style.display = 'none';
+                removeButton.style.display = 'inline-block';
             }
         }
     });

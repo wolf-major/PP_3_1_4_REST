@@ -73,11 +73,6 @@ public class AdminsController {
             addAttributesToMethods(model, principal);
             return "/admin's_pages/user_list";
         }
-        if (!user.getPassword().equals(user.getPasswordConfirm())) {
-            model.addAttribute("errorNewUser", "Пароли не совпадают!");
-            addAttributesToMethods(model, principal);
-            return "/admin's_pages/user_list";
-        }
         userService.saveUser(user, rolesIds);
         return "redirect:/admin/users";
     }
