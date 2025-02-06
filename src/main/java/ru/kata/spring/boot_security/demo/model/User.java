@@ -22,7 +22,7 @@ public class User implements UserDetails {
     @Column(name = "lastName")
     private String lastName;
 
-    @Column(name= "age")
+    @Column(name = "age")
     private Integer age;
 
     @Column(name = "phoneNumber")
@@ -49,7 +49,7 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User (String firstName, String lastName, Integer age, String phoneNumber, String email) {
+    public User(String firstName, String lastName, Integer age, String phoneNumber, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;

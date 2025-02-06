@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return true;
         }
     }
+
     confirmPasswordField.addEventListener('input', validatePasswords);
 
     form.addEventListener('submit', function (event) {

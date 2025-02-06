@@ -89,8 +89,8 @@ public class UserServiceImp implements UserService {
         } else {
             Role userRole = roleRepository.findByName("USER");
             if (userRole == null) {
-            userRole = new Role(1L,"USER");
-            roleRepository.save(userRole);
+                userRole = new Role(1L, "USER");
+                roleRepository.save(userRole);
             }
             user.setRoles(Collections.singleton(userRole));
         }
@@ -114,7 +114,7 @@ public class UserServiceImp implements UserService {
                         .getRoles()
                         .stream()
                         .map(Role::getName)
-                        .toArray(String[] :: new))
+                        .toArray(String[]::new))
                 .build();
     }
 
