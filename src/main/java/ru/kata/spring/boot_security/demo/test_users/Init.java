@@ -10,8 +10,7 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.*;
 
 @Component
 public class Init {
@@ -42,8 +41,7 @@ public class Init {
             adminRole.setName("ADMIN");
             roleService.saveRole(adminRole);
             System.out.println("Роль ADMIN создана");
-        }
-        else {
+        } else {
             System.out.println("РОЛЬ ADMIN НЕ СОЗДАНА!");
         }
 
@@ -69,9 +67,18 @@ public class Init {
             admin.setPassword(("00000000"));
             admin.setPhoneNumber("+1(404) 901-2345");
             admin.setAge(25);
-            admin.setRoles(new HashSet<>(Collections.singleton(roleService.findRoleByName("ADMIN"))));
 
-            userService.saveUser(admin, Collections.singletonList(2L));
+            Set<Role> roles = new HashSet<>();
+            roles.add(roleService.findRoleByName("ADMIN"));
+            roles.add(roleService.findRoleByName("USER"));
+
+            admin.setRoles(roles);
+
+            List<Long> rolesIds = new ArrayList<>();
+            rolesIds.add(1L);
+            rolesIds.add(2L);
+
+            userService.saveUser(admin, rolesIds);
             System.out.println(admin.getPassword());
         }
     }
