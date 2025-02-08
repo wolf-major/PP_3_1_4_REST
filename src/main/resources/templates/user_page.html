@@ -90,13 +90,36 @@
 
 
     </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch('/user_page', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('titleEmail').innerText = data.email;
+                    document.getElementById('titleRoles').innerText = data.role.map(role => role.name).join(', ');
+
+                    document.getElementById('firstName').innerText = data.firstName;
+                    document.getElementById('lastName').innerText = data.lastName;
+                    document.getElementById('email').innerText = data.email;
+                    document.getElementById('phoneNumber').innerText = data.phoneNumber;
+                    document.getElementById('age').innerText = data.age;
+                    document.getElementById('roles').innerText = data.role.map(role => role.name).join(', ');
+                })
+                .catch(error => console.error('Error! Error! Error!'));
+        })
+    </script>
 </head>
 <body>
 <!-- Заголовок -->
 <div class="title">
     <div class="text-block">
-        <span th:text="${user.email}">test</span> &nbsp;with roles:&nbsp; <span
-            th:text="${user.roles}">test</span>
+        <span id="titleEmail">test</span> &nbsp;with roles:&nbsp;
+        <span id="titleRoles">test</span>
     </div>
     <a href="/logout" class="text-block-button">Выйти</a>
 </div>
@@ -106,7 +129,7 @@
         <div class="sidebar-links">
             <!-- Вкладки боковой панели -->
             <ul class="nav nav-pills nav-fill flex-column" id="roleTabs" role="tablist">
-                <li class="nav-item" role="presentation" th:if="${isUserRole}">
+                <li class="nav-item" role="presentation">
                     <button class="nav-link custom-nav-button active" id="user-tab" data-bs-toggle="tab"
                             data-bs-target="#user-content" type="button"
                             role="tab" aria-controls="user-content" aria-selected="true">USER
@@ -136,13 +159,13 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:value="user">
-                        <td th:text="${user.firstName}">John</td>
-                        <td th:text="${user.lastName}">Doe</td>
-                        <td th:text="${user.email}">john.doe@example.com</td>
-                        <td th:text="${user.phoneNumber}">123-456-7890</td>
-                        <td th:text="${user.age}">New York, USA</td>
-                        <td th:text="${user.roles}">User</td>
+                    <tr>
+                        <td id="firstName">Jane</td>
+                        <td id="lastName">Doe</td>
+                        <td id="email">john.doe@example.com</td>
+                        <td id="phoneNumber">123-456-7890</td>
+                        <td id="age">18</td>
+                        <td id="roles">User</td>
                     </tr>
                     </tbody>
                 </table>

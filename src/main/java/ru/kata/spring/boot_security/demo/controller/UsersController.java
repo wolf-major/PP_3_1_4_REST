@@ -1,3 +1,4 @@
+/*
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,3 +40,4 @@ public class UsersController {
     }
 }
 
+*/
