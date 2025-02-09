@@ -101,14 +101,14 @@
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('titleEmail').innerText = data.email;
-                    document.getElementById('titleRoles').innerText = data.role.map(role => role.name).join(', ');
+                    document.getElementById('titleRoles').innerText = data.roles.join(', ');
 
                     document.getElementById('firstName').innerText = data.firstName;
                     document.getElementById('lastName').innerText = data.lastName;
                     document.getElementById('email').innerText = data.email;
                     document.getElementById('phoneNumber').innerText = data.phoneNumber;
                     document.getElementById('age').innerText = data.age;
-                    document.getElementById('roles').innerText = data.role.map(role => role.name).join(', ');
+                    document.getElementById('roles').innerText = data.roles.join(', ');
                 })
                 .catch(error => console.error('Error! Error! Error!'));
         })
@@ -165,7 +165,7 @@
                         <td id="email">john.doe@example.com</td>
                         <td id="phoneNumber">123-456-7890</td>
                         <td id="age">18</td>
-                        <td id="roles">User</td>
+                        <td id="roles">User, Admin</td>
                     </tr>
                     </tbody>
                 </table>

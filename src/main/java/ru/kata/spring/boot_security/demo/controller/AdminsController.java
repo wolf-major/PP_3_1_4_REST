@@ -1,6 +1,6 @@
-/*
 package ru.kata.spring.boot_security.demo.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -18,6 +18,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin")
 @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+@Valid
 public class AdminsController {
     private final UserService userService;
     private final RoleService roleService;
@@ -28,7 +29,7 @@ public class AdminsController {
         this.roleService = roleService;
     }
 
-    public void addAttributesToMethods(Model model, Principal principal) {
+/*    public void addAttributesToMethods(Model model, Principal principal) {
         User user = userService.getUserByEmail(principal.getName());
         model.addAttribute("userTitle", user);
         model.addAttribute("newUser", new User());
@@ -36,16 +37,15 @@ public class AdminsController {
         model.addAttribute("user_list", userService.getUsers());
         model.addAttribute("isUserRole", userService.isUser(user));
         model.addAttribute("isAdminRole", userService.isAdmin(user));
-    }
+    }*/
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public String getUsers(Model model, Principal principal) {
-        addAttributesToMethods(model, principal);
+    public String getUsers() {
         return "admin's_pages/user_list";
     }
 
-    @PostMapping(value = "/save")
+/*    @PostMapping(value = "/save")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String saveUser(@ModelAttribute("newUser") User user,
                            @RequestParam(value = "rolesIds", required = false) List<Long> rolesIds,
@@ -85,6 +85,5 @@ public class AdminsController {
     public String deleteUser(@ModelAttribute("user") User user) {
         userService.deleteUser(user.getId());
         return "redirect:/admin";
-    }
+    }*/
 }
-*/

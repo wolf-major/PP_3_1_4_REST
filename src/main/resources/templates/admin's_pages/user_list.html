@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Список пользователей</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <style>
         .title {
             position: fixed;
@@ -90,13 +89,58 @@
 
 
     </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch('/admin/info', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Начинаем получать данные');
+                    document.getElementById('titleEmailCurrent').innerText = data.email;
+                    document.getElementById('titleRolesCurrent').innerText = data.roles.join(', ');
+
+                    document.getElementById('firstNameCurrent').innerText = data.firstName;
+                    document.getElementById('lastNameCurrent').innerText = data.lastName;
+                    document.getElementById('emailCurrent').innerText = data.email;
+                    document.getElementById('phoneNumberCurrent').innerText = data.phoneNumber;
+                    document.getElementById('ageCurrent').innerText = data.age;
+                    document.getElementById('rolesCurrent').innerText = data.roles.join(', ');
+
+                    const userRoles = data.roles;
+
+                    function hasRoles(role) {
+                        return userRoles.includes(role);
+                    }
+
+                    const adminTabContainer = document.getElementById('admin-tab-container');
+                    const userTabContainer = document.getElementById('user-tab-container');
+
+                    if (hasRoles('ADMIN')) {
+                        adminTabContainer.style.display = 'block';
+                    } else {
+                        adminTabContainer.style.display = 'none';
+                    }
+
+                    if (hasRoles('USER')) {
+                        userTabContainer.style.display = 'block';
+                    } else {
+                        userTabContainer.style.display = 'none';
+                    }
+                })
+                .catch(error => console.error('Error! Error! Error!'));
+        })
+    </script>
 </head>
 <body>
 <!-- Заголовок -->
 <div class="title">
     <div class="text-block">
-        <span th:text="${userTitle.email}">test</span> &nbsp;with roles:&nbsp; <span
-            th:text="${userTitle.roles}">test</span>
+        <span id="titleEmailCurrent">test</span> &nbsp;with roles:&nbsp; <span
+            id="titleRolesCurrent">test</span>
     </div>
     <a href="/logout" class="text-block-button">Выйти</a>
 </div>
@@ -106,13 +150,13 @@
         <div class="sidebar-links">
             <!-- Вкладки боковой панели -->
             <ul class="nav nav-pills nav-fill flex-column" id="roleTabs" role="tablist">
-                <li class="nav-item" role="presentation" th:if="${isAdminRole}">
+                <li class="nav-item" role="presentation" id="admin-tab-container">
                     <button class="nav-link active custom-nav-button" id="admin-tab" data-bs-toggle="tab"
                             data-bs-target="#admin-content"
                             type="button" role="tab" aria-controls="admin-content" aria-selected="true">ADMIN
                     </button>
                 </li>
-                <li class="nav-item" role="presentation" th:if="${isUserRole}">
+                <li class="nav-item" role="presentation" id="user-tab-container">
                     <button class="nav-link custom-nav-button" id="user-tab" data-bs-toggle="tab"
                             data-bs-target="#user-content" type="button"
                             role="tab" aria-controls="user-content" aria-selected="false">USER
@@ -199,7 +243,7 @@
                     </div>
 
                     <!-- Наполнение второй вкладки для добавления нового пользователя -->
-                    <div class="tab-pane fade" id="add-user" role="tabpanel" aria-labelledby="add-user-tab">
+                    <!--<div class="tab-pane fade" id="add-user" role="tabpanel" aria-labelledby="add-user-tab">
                         <form th:action="@{'/admin/save'}" th:object="${newUser}" method="post" id="add-user-form">
                             <div class="mb-3">
                                 <label for="firstName" class="form-label">Имя</label>
@@ -250,7 +294,7 @@
                             </div>
                             <button type="submit" class="btn btn-primary" id="save-new-user-button">SAVE</button>
                         </form>
-                    </div>
+                    </div>-->
                 </div>
             </div>
 
@@ -273,13 +317,13 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:value="userTitle">
-                            <td th:text="${userTitle.firstName}">John</td>
-                            <td th:text="${userTitle.lastName}">Doe</td>
-                            <td th:text="${userTitle.email}">john.doe@example.com</td>
-                            <td th:text="${userTitle.phoneNumber}">123-456-7890</td>
-                            <td th:text="${userTitle.age}">New York, USA</td>
-                            <td th:text="${userTitle.roles}">User</td>
+                        <tr>
+                            <td id="firstNameCurrent">John</td>
+                            <td id="lastNameCurrent">Doe</td>
+                            <td id="emailCurrent">john.doe@example.com</td>
+                            <td id="phoneNumberCurrent">123-456-7890</td>
+                            <td id="ageCurrent">18</td>
+                            <td id="rolesCurrent">User</td>
                         </tr>
                         </tbody>
                     </table>

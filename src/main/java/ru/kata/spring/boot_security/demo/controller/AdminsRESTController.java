@@ -14,12 +14,11 @@ import ru.kata.spring.boot_security.demo.model.UserDTO;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
-import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminsRESTController {
     private final UserService userService;
     private final RoleService roleService;
@@ -30,11 +29,9 @@ public class AdminsRESTController {
         this.roleService = roleService;
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserDTO>> getUsers(@AuthenticationPrincipal UserDetails userDetails) {
-        User user = userService.getUserByEmail(userDetails.getUsername());
         List<User> users = userService.getUsers();
         List<UserDTO> usersDTO = users.stream()
                 .map(userService::setDataToUser)
@@ -42,4 +39,11 @@ public class AdminsRESTController {
         return ResponseEntity.ok(usersDTO);
     }
 
+    @GetMapping(value = "/info", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+        System.out.println(userDetails.getUsername());
+        User user = userService.getUserByEmail(userDetails.getUsername());
+        return ResponseEntity.ok(userService.setDataToUser(user));
+    }
 }
