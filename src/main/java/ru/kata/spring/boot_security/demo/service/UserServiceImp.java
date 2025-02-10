@@ -142,8 +142,11 @@ public class UserServiceImp implements UserService, UserDetailsService {
         userDTO.setEmail(user.getEmail());
         userDTO.setAge(user.getAge());
         userDTO.setPhoneNumber(user.getPhoneNumber());
-        userDTO.setRoles(user.getRoles().stream().map(Role::getName).collect(Collectors.toSet()));
-
+        userDTO.setRoles(user
+                            .getRoles()
+                            .stream()
+                            .map(Role::getName)
+                            .collect(Collectors.toSet()));
         return userDTO;
     }
 }

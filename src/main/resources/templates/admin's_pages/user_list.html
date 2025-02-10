@@ -87,6 +87,10 @@
             color: white;
         }
 
+        .title_table_head {
+            font-size: 30px;
+        }
+
 
     </style>
     <script>
@@ -132,7 +136,44 @@
                     }
                 })
                 .catch(error => console.error('Error! Error! Error!'));
-        })
+
+            fetch('/admin/users', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    fillTableWithUsers(data);
+                })
+                .catch(error => console.log('Ошибка при заполнении таблицы:', error));
+
+            function fillTableWithUsers(users) {
+                const tbody = document.querySelector('#tableUsers tbody');
+                tbody.innerHTML = '';
+
+                users.forEach((user, index) => {
+                    const line = document.createElement('tr');
+
+                    line.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${user.firstName}</td>
+                        <td>${user.lastName}</td>
+                        <td>${user.email}</td>
+                        <td>${user.phoneNumber}</td>
+                        <td>${user.age}</td>
+                        <td>${user.roles}</td>
+                        <td>
+                            <button class="btn btn-info" onclick="editUser(${user.id})">Edit</button>
+                            <button class="btn btn-danger" id="deleteButton">Delete</button>
+                        </td>
+                    `;
+
+                    tbody.appendChild(line);
+                });
+            }
+        });
     </script>
 </head>
 <body>
@@ -142,7 +183,7 @@
         <span id="titleEmailCurrent">test</span> &nbsp;with roles:&nbsp; <span
             id="titleRolesCurrent">test</span>
     </div>
-    <a href="/logout" class="text-block-button">Выйти</a>
+    <a href="/logout" class="text-block-button">Logout</a>
 </div>
 <!-- Боковая панель -->
 <div class="d-flex">
@@ -189,10 +230,10 @@
                 <div class="tab-content" id="usersTabContent">
                     <!-- Наполнение первой вкладки с пользователями -->
                     <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
-                        <div th:if="${error}" class="alert alert-danger" th:text="${error}" id="passwordsModal"></div>
-                        <table class="table table-bordered">
+                        <!--<div th:if="${error}" class="alert alert-danger" th:text="${error}" id="passwordsModal"></div>-->
+                        <h1 class="title_table_head">User's information-page</h1>
+                        <table class="table table-bordered" id="tableUsers">
                             <thead>
-                            <h1>User's information-page</h1>
                             <tr class="title-table">
                                 <th colspan="8">Ваши данные:</th>
                             <tr>
@@ -206,39 +247,7 @@
                                 <th>Действия</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr th:each="user, stat : ${user_list}">
-                                <td th:text="${stat.index + 1}">1</td>
-                                <td th:text="${user.firstName}">John</td>
-                                <td th:text="${user.lastName}">Doe</td>
-                                <td th:text="${user.email}">john.doe@example.com</td>
-                                <td th:text="${user.phoneNumber}">123-456-7890</td>
-                                <td th:text="${user.age}">New York, USA</td>
-                                <td th:text="${user.roles}">User</td>
-                                <td>
-                                    <button type="button" class="btn btn-warning" data-bs-toggle="modal"
-                                            data-bs-target="#actionsModal" data-bs-whatever="edit-button"
-                                            th:data-id="${user.id}"
-                                            th:data-first-name="${user.firstName}"
-                                            th:data-last-name="${user.lastName}"
-                                            th:data-email="${user.email}"
-                                            th:data-phone-number="${user.phoneNumber}"
-                                            th:data-age="${user.age}"
-                                            th:data-roles="${#strings.arrayJoin(user.roles.![id], ',')}">Edit
-                                    </button>
-                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                            data-bs-target="#actionsModal" data-bs-whatever="delete-button"
-                                            th:data-id="${user.id}"
-                                            th:data-first-name="${user.firstName}"
-                                            th:data-last-name="${user.lastName}"
-                                            th:data-email="${user.email}"
-                                            th:data-phone-number="${user.phoneNumber}"
-                                            th:data-age="${user.age}"
-                                            th:data-roles="${#strings.arrayJoin(user.roles.![id], ',')}">Delete
-                                    </button>
-                                </td>
-                            </tr>
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
 
@@ -396,5 +405,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/edit_user_modal.js"></script>
 <script src="/password_confirm.js"></script>
+<script src="/edit_user.js"></script>
 </body>
 </html>

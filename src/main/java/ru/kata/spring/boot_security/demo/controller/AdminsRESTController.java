@@ -31,7 +31,7 @@ public class AdminsRESTController {
 
     @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<List<UserDTO>> getUsers(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<List<UserDTO>> getUsers() {
         List<User> users = userService.getUsers();
         List<UserDTO> usersDTO = users.stream()
                 .map(userService::setDataToUser)
@@ -44,6 +44,13 @@ public class AdminsRESTController {
     public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
         System.out.println(userDetails.getUsername());
         User user = userService.getUserByEmail(userDetails.getUsername());
+        return ResponseEntity.ok(userService.setDataToUser(user));
+    }
+
+    @GetMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+        User user = userService.getUser(id);
         return ResponseEntity.ok(userService.setDataToUser(user));
     }
 }

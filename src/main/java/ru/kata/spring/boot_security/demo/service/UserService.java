@@ -12,7 +12,7 @@ import java.util.Set;
 public interface UserService extends UserDetailsService {
     List<User> getUsers();
 
-    User getUser(Long user);
+    User getUser(Long id);
 
     User getUserByEmail(String email);
 
