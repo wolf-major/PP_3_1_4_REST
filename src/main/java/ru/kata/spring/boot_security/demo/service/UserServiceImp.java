@@ -21,14 +21,16 @@ public class UserServiceImp implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final RoleService roleService;
 
     @Autowired
     public UserServiceImp(UserRepository userRepositoryInt,
                           PasswordEncoder passwordEncoder,
-                          RoleRepository roleRepository) {
+                          RoleRepository roleRepository, RoleService roleService) {
         this.userRepository = userRepositoryInt;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.roleService = roleService;
     }
 
 
@@ -148,5 +150,20 @@ public class UserServiceImp implements UserService, UserDetailsService {
                             .map(Role::getName)
                             .collect(Collectors.toSet()));
         return userDTO;
+    }
+
+    @Override
+    public User convertDataFromUserDTO(UserDTO userDTO) {
+        User user = new User();
+        user.setId(userDTO.getId());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setAge(userDTO.getAge());
+        user.setPhoneNumber(userDTO.getPhoneNumber());
+        user.setEmail(userDTO.getEmail());
+        user.setRoles(userDTO.getRoles()
+                .stream().map(roleService :: findRoleByName)
+                .collect(Collectors.toSet()));
+        return user;
     }
 }

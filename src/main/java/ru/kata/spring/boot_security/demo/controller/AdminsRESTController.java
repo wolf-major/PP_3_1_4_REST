@@ -53,4 +53,17 @@ public class AdminsRESTController {
         User user = userService.getUser(id);
         return ResponseEntity.ok(userService.setDataToUser(user));
     }
+
+    @PostMapping(value = "/save_edit")
+    @ResponseBody
+    public ResponseEntity<String> editUser(UserDTO userDTO) {
+        try {
+            User user = userService.convertDataFromUserDTO(userDTO);
+
+            userService.updateUser(user);
+            return ResponseEntity.ok("Данные пользователя успешно обновлены!");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ошибка при сохранении данных пользователя" + e.getMessage());
+        }
+    }
 }

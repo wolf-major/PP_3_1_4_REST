@@ -25,5 +25,8 @@ public interface UserService extends UserDetailsService {
     boolean isAdmin(User user);
 
     boolean isUser(User user);
+
     UserDTO setDataToUser(User user);
+
+    User convertDataFromUserDTO(UserDTO userDTO);
 }
