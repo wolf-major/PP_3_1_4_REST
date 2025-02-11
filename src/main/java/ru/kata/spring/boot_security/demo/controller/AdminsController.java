@@ -39,11 +39,11 @@ public class AdminsController {
         model.addAttribute("isAdminRole", userService.isAdmin(user));
     }*/
 
-    @GetMapping
+/*    @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public String getUsers() {
         return "admin's_pages/user_list";
-    }
+    }*/
 
 /*    @PostMapping(value = "/save")
     @PreAuthorize("hasAuthority('ADMIN')")

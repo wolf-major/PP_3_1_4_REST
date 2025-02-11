@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.model.UserDTO;
 import ru.kata.spring.boot_security.demo.service.RoleService;
@@ -31,6 +32,12 @@ public class AdminsRESTController {
     public AdminsRESTController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public String getUsersHTML() {
+        return "admin's_pages/user_list";
     }
 
     @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -72,6 +79,42 @@ public class AdminsRESTController {
             e.printStackTrace();
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", "Ошибка при сохранении данных пользователя: " + e.getMessage());
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+
+    @PostMapping(value = "/save")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> saveUser(@RequestBody UserDTO userDTO) {
+        try {
+            User user = userService.convertDataFromUserDTO(userDTO);
+            userService.saveUser(user);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Пользователь успешно добавлен!");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Ошибка при сохранении данных пользователя: " + e.getMessage());
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+
+    @PostMapping(value = "/delete")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> deleteUser(@RequestBody UserDTO userDTO) {
+        try {
+            User user = userService.convertDataFromUserDTO(userDTO);
+            userService.deleteUser(user);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Пользователь успешно удален!");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Ошибка при удалении пользователя " + e.getMessage());
             return ResponseEntity.status(500).body(errorResponse);
         }
     }

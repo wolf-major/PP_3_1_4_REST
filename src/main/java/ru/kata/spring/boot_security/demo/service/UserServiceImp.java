@@ -54,8 +54,8 @@ public class UserServiceImp implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public void deleteUser(Long id) {
-        userRepository.delete(userRepository.findUserById(id));
+    public void deleteUser(User user) {
+        userRepository.delete(userRepository.findUserByEmail(user.getEmail()));
     }
 
     @Override
@@ -81,24 +81,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public void saveUser(User user, List<Long> rolesIds) {
-        Set<Role> roles = new HashSet<>();
-        if (rolesIds != null) {
-            for (Long roleId : rolesIds) {
-                Role role = roleRepository.findById(roleId).orElse(null);
-                if (role != null) {
-                    roles.add(role);
-                }
-            }
-            user.setRoles(roles);
-        } else {
-            Role userRole = roleRepository.findByName("USER");
-            if (userRole == null) {
-                userRole = new Role(1L, "USER");
-                roleRepository.save(userRole);
-            }
-            user.setRoles(Collections.singleton(userRole));
-        }
+    public void saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
@@ -154,8 +137,10 @@ public class UserServiceImp implements UserService, UserDetailsService {
 
     @Override
     public User convertDataFromUserDTO(UserDTO userDTO) {
-        User user = userRepository.findUserByEmail(userDTO.getEmail());
-        user.setId(userDTO.getId());
+        User user = new User();
+        if (userDTO.getId() != null) {
+            user.setId(userDTO.getId());
+        }
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setAge(userDTO.getAge());
@@ -165,7 +150,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
         if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         } else {
-            user.setPassword(user.getPassword());
+            user.setPassword(userRepository.findUserByEmail(userDTO.getEmail()).getPassword());
         }
 
         user.setRoles(userDTO.getRoles()

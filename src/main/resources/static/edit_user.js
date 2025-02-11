@@ -2,7 +2,6 @@ const modal = document.getElementById('actionsModal');
 const modalForm = document.getElementById('modalWindowAction');
 const submitButton = document.getElementById('submitButton');
 const removeButton = document.getElementById('removeButton');
-const editForm = modalForm.querySelector('form');
 
 async function fillModalWindow(userId) {
     try {
@@ -42,7 +41,7 @@ async function fillModalWindow(userId) {
     }
 }
 
-async function sendDataToServer(data) {
+async function sendEditDataToServer(data) {
     try {
         const response = await fetch('/admin/save_edit', {
             method: 'POST',
@@ -88,6 +87,11 @@ function setupEditModal(userId) {
         data.roles = Array.from(rolesSelect.selectedOptions)
             .map(option => option.value);
 
+        if (data.password !== data.passwordConfirm) {
+            alert('Пароли не совпадают!');
+            return;
+        }
+
         if (!data.password || data.password.trim() === '') {
             delete data.password;
             delete data.passwordConfirm;
@@ -95,6 +99,7 @@ function setupEditModal(userId) {
             alert('Минимальная длина пароля - 8 символов.');
             return;
         }
+
         console.log("Отправляемые данные:", data);
         const jsonData = JSON.stringify(data);
         console.log("JSON для отправки:", jsonData);
@@ -102,10 +107,10 @@ function setupEditModal(userId) {
         try {
             const modalInstance = bootstrap.Modal.getInstance(modal);
 
-            await sendDataToServer(data);
+            await sendEditDataToServer(data);
             modalInstance.hide();
             updateTableRow(data);
-            getUserElements(data);
+            showUserInfo();
 
         } catch (error) {
             console.error('Ошибка при сохранении данных:', error);
@@ -115,16 +120,6 @@ function setupEditModal(userId) {
 
 async function editUser(userId) {
     await setupEditModal(userId);
-}
-
-
-async function deleteUser(userId) {
-    await fillModalWindow(userId);
-    modal.querySelector('.modal-title').textContent = 'Delete user';
-    submitButton.textContent = 'DELETE';
-    submitButton.style.display = 'none';
-    removeButton.style.display = 'inline-block';
-    toggleFields(false);
 }
 
 function toggleFields(editable) {

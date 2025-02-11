@@ -100,15 +100,8 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('titleEmail').innerText = data.email;
-                    document.getElementById('titleRoles').innerText = data.roles.join(', ');
-
-                    document.getElementById('firstName').innerText = data.firstName;
-                    document.getElementById('lastName').innerText = data.lastName;
-                    document.getElementById('email').innerText = data.email;
-                    document.getElementById('phoneNumber').innerText = data.phoneNumber;
-                    document.getElementById('age').innerText = data.age;
-                    document.getElementById('roles').innerText = data.roles.join(', ');
+                    console.log(data);
+                    getUserElements(data);
                 })
                 .catch(error => console.error('Error! Error! Error!'));
         })
@@ -118,8 +111,8 @@
 <!-- Заголовок -->
 <div class="title">
     <div class="text-block">
-        <span id="titleEmail">test</span> &nbsp;with roles:&nbsp;
-        <span id="titleRoles">test</span>
+        <span id="titleEmailCurrent">test</span> &nbsp;with roles:&nbsp;
+        <span id="titleRolesCurrent">test</span>
     </div>
     <a href="/logout" class="text-block-button">Выйти</a>
 </div>
@@ -160,12 +153,12 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td id="firstName">Jane</td>
-                        <td id="lastName">Doe</td>
-                        <td id="email">john.doe@example.com</td>
-                        <td id="phoneNumber">123-456-7890</td>
-                        <td id="age">18</td>
-                        <td id="roles">User, Admin</td>
+                        <td id="firstNameCurrent">Jane</td>
+                        <td id="lastNameCurrent">Doe</td>
+                        <td id="emailCurrent">john.doe@example.com</td>
+                        <td id="phoneNumberCurrent">123-456-7890</td>
+                        <td id="ageCurrent">18</td>
+                        <td id="rolesCurrent">User, Admin</td>
                     </tr>
                     </tbody>
                 </table>
@@ -174,5 +167,6 @@
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/user's_info.js"></script>
 </body>
 </html>

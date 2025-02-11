@@ -16,11 +16,11 @@ public interface UserService extends UserDetailsService {
 
     User getUserByEmail(String email);
 
-    void deleteUser(Long id);
+    void deleteUser(User user);
 
     void updateUser(User user);
 
-    void saveUser(User user, List<Long> rolesIds);
+    void saveUser(User user);
 
     boolean isAdmin(User user);
 

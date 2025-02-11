@@ -190,7 +190,6 @@
                 <div class="tab-content" id="usersTabContent">
                     <!-- Наполнение первой вкладки с пользователями -->
                     <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
-                        <!--<div th:if="${error}" class="alert alert-danger" th:text="${error}" id="passwordsModal"></div>-->
                         <h1 class="title_table_head">User's information-page</h1>
                         <table class="table table-bordered" id="tableUsers">
                             <thead>
@@ -212,58 +211,54 @@
                     </div>
 
                     <!-- Наполнение второй вкладки для добавления нового пользователя -->
-                    <!--<div class="tab-pane fade" id="add-user" role="tabpanel" aria-labelledby="add-user-tab">
-                        <form th:action="@{'/admin/save'}" th:object="${newUser}" method="post" id="add-user-form">
+                    <div class="tab-pane fade" id="add-user" role="tabpanel" aria-labelledby="add-user-tab">
+                        <form id="add-user-form">
                             <div class="mb-3">
                                 <label for="firstName" class="form-label">Имя</label>
-                                <input type="text" class="form-control" id="firstName" th:field="*{firstName}"
+                                <input type="text" class="form-control" id="firstName" name="firstName"
                                        placeholder="Ivan" required>
                             </div>
                             <div class="mb-3">
                                 <label for="lastName" class="form-label">Фамилия</label>
-                                <input type="text" class="form-control" id="lastName" th:field="*{lastName}"
+                                <input type="text" class="form-control" id="lastName" name="lastName"
                                        placeholder="Ivanov" required>
                             </div>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email (будет использован в качестве
                                     логина)</label>
-                                <input type="email" class="form-control" id="email" th:field="*{email}"
+                                <input type="email" class="form-control" id="email" name="email"
                                        placeholder="example@example.com" required>
                             </div>
                             <div class="mb-3">
                                 <label for="phoneNumber" class="form-label">Телефон</label>
-                                <input type="text" class="form-control" id="phoneNumber" th:field="*{phoneNumber}"
+                                <input type="text" class="form-control" id="phoneNumber" name="phoneNumber"
                                        placeholder="+7(000)000-0000" required>
                             </div>
                             <div class="mb-3">
                                 <label for="age" class="form-label">Возраст</label>
-                                <input type="number" class="form-control" id="age" th:field="*{age}"
+                                <input type="number" class="form-control" id="age" name="age"
                                        placeholder="18" required>
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Пароль</label>
-                                <input type="password" class="form-control" id="password" th:field="*{password}"
+                                <input type="password" class="form-control" id="password"  name="password"
                                        placeholder="password" required>
                             </div>
                             <div class="mb-3">
                                 <label for="passwordConfirm" class="form-label">Подтверждение пароля</label>
-                                <input type="password" class="form-control" id="passwordConfirm"
-                                       th:field="*{passwordConfirm}"
+                                <input type="password" class="form-control" id="passwordConfirm" name="passwordConfirm"
                                        placeholder="password" required>
-                                <div id="passwordError" class="text-danger" style="display: none">Пароли не
-                                    совпадают!
-                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="rolesSelect" class="form-label">Роли</label>
-                                <select class="form-select" id="rolesSelect" name="rolesIds" multiple required>
-                                    <option value="1">USER</option>
-                                    <option value="2">ADMIN</option>
+                                <select class="form-select" id="rolesSelect" name="roles" multiple required>
+                                    <option value="USER">USER</option>
+                                    <option value="ADMIN">ADMIN</option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-primary" id="save-new-user-button">SAVE</button>
+                            <button type="button" class="btn btn-primary" id="save-new-user-button">SAVE</button>
                         </form>
-                    </div>-->
+                    </div>
                 </div>
             </div>
 
@@ -362,8 +357,9 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/edit_user_modal.js"></script>
-<script src="/password_confirm.js"></script>
 <script src="/edit_user.js"></script>
 <script src="/user's_info.js"></script>
+<script src="/delete_user.js"></script>
+<script src="/save_user.js"></script>
 </body>
 </html>
