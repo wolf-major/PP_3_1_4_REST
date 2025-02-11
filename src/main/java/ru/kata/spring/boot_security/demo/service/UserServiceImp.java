@@ -146,9 +146,10 @@ public class UserServiceImp implements UserService, UserDetailsService {
         user.setAge(userDTO.getAge());
         user.setPhoneNumber(userDTO.getPhoneNumber());
         user.setEmail(userDTO.getEmail());
+        System.out.println(userDTO.getPassword());
 
         if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            user.setPassword(userDTO.getPassword());
         } else {
             user.setPassword(userRepository.findUserByEmail(userDTO.getEmail()).getPassword());
         }

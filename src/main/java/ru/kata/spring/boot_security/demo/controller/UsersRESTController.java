@@ -27,6 +27,12 @@ public class UsersRESTController {
         this.roleService = roleService;
     }
 
+    @GetMapping(value = "/user")
+    @PreAuthorize("hasAuthority('USER')")
+    public String getUserPage() {
+        return "user_page";
+    }
+
     @GetMapping(value = "/user_page", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @PreAuthorize("hasRole('USER')")

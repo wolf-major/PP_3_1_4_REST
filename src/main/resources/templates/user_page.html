@@ -98,12 +98,18 @@
                     'Content-Type': 'application/json'
                 }
             })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Ошибка HTTP: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     console.log(data);
+                    delete data.password;
                     getUserElements(data);
                 })
-                .catch(error => console.error('Error! Error! Error!'));
+                .catch(error => console.error('Произошла ошибка при заполнении страницы'));
         })
     </script>
 </head>
@@ -114,7 +120,7 @@
         <span id="titleEmailCurrent">test</span> &nbsp;with roles:&nbsp;
         <span id="titleRolesCurrent">test</span>
     </div>
-    <a href="/logout" class="text-block-button">Выйти</a>
+    <a href="/logout" class="text-block-button">Logout</a>
 </div>
 <!-- Боковая панель -->
 <div class="d-flex">

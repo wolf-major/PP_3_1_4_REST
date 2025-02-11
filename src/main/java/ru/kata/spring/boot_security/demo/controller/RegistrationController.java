@@ -37,5 +37,6 @@ public class RegistrationController {
     public String getLoginPage() {
         return "welcome_pages/login_page";
     }
+
 }
 
