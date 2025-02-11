@@ -95,48 +95,7 @@
     </style>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            fetch('/admin/info', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Начинаем получать данные');
-                    document.getElementById('titleEmailCurrent').innerText = data.email;
-                    document.getElementById('titleRolesCurrent').innerText = data.roles.join(', ');
-
-                    document.getElementById('firstNameCurrent').innerText = data.firstName;
-                    document.getElementById('lastNameCurrent').innerText = data.lastName;
-                    document.getElementById('emailCurrent').innerText = data.email;
-                    document.getElementById('phoneNumberCurrent').innerText = data.phoneNumber;
-                    document.getElementById('ageCurrent').innerText = data.age;
-                    document.getElementById('rolesCurrent').innerText = data.roles.join(', ');
-
-                    const userRoles = data.roles;
-
-                    function hasRoles(role) {
-                        return userRoles.includes(role);
-                    }
-
-                    const adminTabContainer = document.getElementById('admin-tab-container');
-                    const userTabContainer = document.getElementById('user-tab-container');
-
-                    if (hasRoles('ADMIN')) {
-                        adminTabContainer.style.display = 'block';
-                    } else {
-                        adminTabContainer.style.display = 'none';
-                    }
-
-                    if (hasRoles('USER')) {
-                        userTabContainer.style.display = 'block';
-                    } else {
-                        userTabContainer.style.display = 'none';
-                    }
-                })
-                .catch(error => console.error('Error! Error! Error!'));
-
+            showUserInfo();
             fetch('/admin/users', {
                 method: 'GET',
                 headers: {
@@ -155,6 +114,7 @@
 
                 users.forEach((user, index) => {
                     const line = document.createElement('tr');
+                    line.setAttribute('data-id', user.id);
 
                     line.innerHTML = `
                         <td>${index + 1}</td>
@@ -350,10 +310,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                 </div>
                 <div class="modal-body">
-                    <form th:action="@{/admin/save_edit}" method="post" id="modalWindowAction">
+                    <form id="modalWindowAction">
                         <input type="hidden" name="id">
-                        <input type="hidden" name="action" id="actionField" value="save">
-
                         <div class="mb-3">
                             <label for="editFirstName" class="form-label">Имя</label>
                             <input type="text" class="form-control" id="editFirstName" name="firstName" required>
@@ -383,11 +341,11 @@
                         <div class="mb-3">
                             <label for="editPasswordConfirm" class="form-label">Подтверждение пароля</label>
                             <input type="password" class="form-control" id="editPasswordConfirm"
-                                   name="passwordConfirm" placeholder="password" required>
+                                   name="passwordConfirm" placeholder="password">
                         </div>
                         <div class="mb-3">
                             <label for="editRolesSelect" class="form-label">Роли</label>
-                            <select class="form-select" id="editRolesSelect" name="rolesIds" multiple required>
+                            <select class="form-select" id="editRolesSelect" name="roles" multiple required>
                                 <option value="1">USER</option>
                                 <option value="2">ADMIN</option>
                             </select>
@@ -395,8 +353,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" id="submitButton">SUBMIT</button>
-                    <button type="submit" class="btn btn-primary" id="removeButton">DELETE</button>
+                    <button type="button" class="btn btn-primary" id="submitButton">SUBMIT</button>
+                    <button type="button" class="btn btn-primary" id="removeButton">DELETE</button>
                 </div>
             </div>
         </div>
@@ -406,5 +364,6 @@
 <script src="/edit_user_modal.js"></script>
 <script src="/password_confirm.js"></script>
 <script src="/edit_user.js"></script>
+<script src="/user's_info.js"></script>
 </body>
 </html>

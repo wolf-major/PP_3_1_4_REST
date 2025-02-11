@@ -38,7 +38,7 @@ async function fillModalWindow(userId) {
         modalInstance.show();
     } catch (error) {
         console.error('Ошибка при получении данных:', error);
-        alert('Не удалось загрузить данные пользователя.');
+
     }
 }
 
@@ -57,10 +57,8 @@ async function sendDataToServer(data) {
 
         const result = await response.json();
         console.log('Сохранено:', result);
-        alert('Данные успешно сохранены!');
     } catch (error) {
         console.error('Ошибка при сохранении данных:', error);
-        alert('Не удалось сохранить данные.');
     }
 }
 
@@ -81,17 +79,42 @@ function setupEditModal(userId) {
 
         const formData = new FormData(modalForm);
         const data = Object.fromEntries(formData.entries());
-        const roles = document.querySelectorAll("#editRolesSelect");
 
-        data.roles = Array.from(roles.selectedOptions)
-                        .map(option => option.value);
+        data.id = parseInt(data.id, 10);
+        data.age = parseInt(data.age, 10);
 
-        await sendDataToServer(data);
+        delete data.roles;
+        const rolesSelect = modalForm.querySelector('#editRolesSelect');
+        data.roles = Array.from(rolesSelect.selectedOptions)
+            .map(option => option.value);
+
+        if (!data.password || data.password.trim() === '') {
+            delete data.password;
+            delete data.passwordConfirm;
+        } else if (data.password.length < 8) {
+            alert('Минимальная длина пароля - 8 символов.');
+            return;
+        }
+        console.log("Отправляемые данные:", data);
+        const jsonData = JSON.stringify(data);
+        console.log("JSON для отправки:", jsonData);
+
+        try {
+            const modalInstance = bootstrap.Modal.getInstance(modal);
+
+            await sendDataToServer(data);
+            modalInstance.hide();
+            updateTableRow(data);
+
+        } catch (error) {
+            console.error('Ошибка при сохранении данных:', error);
+        }
     }
 }
 
 async function editUser(userId) {
     await setupEditModal(userId);
+    showUserInfo();
 }
 
 
@@ -113,4 +136,23 @@ function toggleFields(editable) {
             field.setAttribute('readonly', true);
         }
     })
+}
+
+function updateTableRow(updatedUser) {
+    const row = document.querySelector(`#tableUsers tr[data-id="${updatedUser.id}"]`);
+    if (row) {
+        row.innerHTML = `
+            <td>${updatedUser.id}</td>
+            <td>${updatedUser.firstName}</td>
+            <td>${updatedUser.lastName}</td>
+            <td>${updatedUser.email}</td>
+            <td>${updatedUser.phoneNumber}</td>
+            <td>${updatedUser.age}</td>
+            <td>${updatedUser.roles.join(', ')}</td>
+            <td>
+                <button class="btn btn-info" onclick="editUser(${updatedUser.id})">Edit</button>
+                <button class="btn btn-danger" onclick="deleteUser(${updatedUser.id})">Delete</button>
+            </td>
+        `;
+    }
 }

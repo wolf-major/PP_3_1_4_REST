@@ -67,8 +67,8 @@ public class UserServiceImp implements UserService, UserDetailsService {
         existingUser.setLastName(user.getLastName());
         existingUser.setEmail(user.getEmail());
         existingUser.setAge(user.getAge());
-        if (!user.getPassword().equals(existingUser.getPassword())) {
-            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            if (!user.getPassword().equals(existingUser.getPassword())) {
                 existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
             }
         }
@@ -145,24 +145,31 @@ public class UserServiceImp implements UserService, UserDetailsService {
         userDTO.setAge(user.getAge());
         userDTO.setPhoneNumber(user.getPhoneNumber());
         userDTO.setRoles(user
-                            .getRoles()
-                            .stream()
-                            .map(Role::getName)
-                            .collect(Collectors.toSet()));
+                .getRoles()
+                .stream()
+                .map(Role::getName)
+                .collect(Collectors.toList()));
         return userDTO;
     }
 
     @Override
     public User convertDataFromUserDTO(UserDTO userDTO) {
-        User user = new User();
+        User user = userRepository.findUserByEmail(userDTO.getEmail());
         user.setId(userDTO.getId());
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setAge(userDTO.getAge());
         user.setPhoneNumber(userDTO.getPhoneNumber());
         user.setEmail(userDTO.getEmail());
+
+        if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        } else {
+            user.setPassword(user.getPassword());
+        }
+
         user.setRoles(userDTO.getRoles()
-                .stream().map(roleService :: findRoleByName)
+                .stream().map(roleService::findRoleByName)
                 .collect(Collectors.toSet()));
         return user;
     }

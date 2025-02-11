@@ -1,3 +1,4 @@
+/*
 const modalManager = {
     data: null,
     saveData(button) {
@@ -111,3 +112,4 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+*/

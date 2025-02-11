@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,10 @@ import ru.kata.spring.boot_security.demo.model.UserDTO;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
@@ -56,14 +60,19 @@ public class AdminsRESTController {
 
     @PostMapping(value = "/save_edit")
     @ResponseBody
-    public ResponseEntity<String> editUser(UserDTO userDTO) {
+    public ResponseEntity<Map<String, String>> editUser(@RequestBody UserDTO userDTO) {
         try {
             User user = userService.convertDataFromUserDTO(userDTO);
-
             userService.updateUser(user);
-            return ResponseEntity.ok("Данные пользователя успешно обновлены!");
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Данные пользователя успешно обновлены!");
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Ошибка при сохранении данных пользователя" + e.getMessage());
+            e.printStackTrace();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Ошибка при сохранении данных пользователя: " + e.getMessage());
+            return ResponseEntity.status(500).body(errorResponse);
         }
     }
 }

@@ -1,3 +1,4 @@
+/*
 document.addEventListener('DOMContentLoaded', function () {
     const passwordField = document.getElementById('password');
     const confirmPasswordField = document.getElementById('passwordConfirm');
@@ -22,3 +23,4 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+*/

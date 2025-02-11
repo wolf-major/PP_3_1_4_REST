@@ -1,5 +1,7 @@
 package ru.kata.spring.boot_security.demo.model;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -11,15 +13,13 @@ public class UserDTO {
     private Integer age;
     private String phoneNumber;
     private String password;
-    private String passwordConfirm;
-    private Set<String> roles;
+    private Set<String> roles = new HashSet<>();
 
     public UserDTO() {
     }
 
     public UserDTO(Long id,
                    Set<String> roles,
-                   String passwordConfirm,
                    String password,
                    String phoneNumber,
                    Integer age,
@@ -28,7 +28,6 @@ public class UserDTO {
                    String firstName) {
         this.id = id;
         this.roles = roles;
-        this.passwordConfirm = passwordConfirm;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.age = age;
@@ -93,20 +92,12 @@ public class UserDTO {
         this.password = password;
     }
 
-    public String getPasswordConfirm() {
-        return passwordConfirm;
-    }
-
-    public void setPasswordConfirm(String passwordConfirm) {
-        this.passwordConfirm = passwordConfirm;
-    }
-
     public Set<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
+    public void setRoles(List<String> roles) {
+        this.roles = new HashSet<>(roles);
     }
 
     @Override
@@ -118,7 +109,6 @@ public class UserDTO {
                 ", email='" + email + '\'' +
                 ", age=" + age +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", password='" + password + '\'' +
                 ", roles=" + roles +
                 '}';
     }
@@ -127,16 +117,11 @@ public class UserDTO {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         UserDTO userDTO = (UserDTO) o;
-        return Objects.equals(firstName, userDTO.firstName)
-                && Objects.equals(lastName, userDTO.lastName)
-                && Objects.equals(email, userDTO.email)
-                && Objects.equals(age, userDTO.age)
-                && Objects.equals(phoneNumber, userDTO.phoneNumber)
-                && Objects.equals(roles, userDTO.roles);
+        return Objects.equals(id, userDTO.id) && Objects.equals(firstName, userDTO.firstName) && Objects.equals(lastName, userDTO.lastName) && Objects.equals(email, userDTO.email) && Objects.equals(age, userDTO.age) && Objects.equals(phoneNumber, userDTO.phoneNumber) && Objects.equals(password, userDTO.password) && Objects.equals(roles, userDTO.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, email, age, phoneNumber, password, passwordConfirm, roles);
+        return Objects.hash(id, firstName, lastName, email, age, phoneNumber, password, roles);
     }
 }
