@@ -105,6 +105,7 @@ function setupEditModal(userId) {
             await sendDataToServer(data);
             modalInstance.hide();
             updateTableRow(data);
+            getUserElements(data);
 
         } catch (error) {
             console.error('Ошибка при сохранении данных:', error);
@@ -114,7 +115,6 @@ function setupEditModal(userId) {
 
 async function editUser(userId) {
     await setupEditModal(userId);
-    showUserInfo();
 }
 
 
